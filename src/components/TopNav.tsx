@@ -102,9 +102,6 @@ export default function TopNav({
                 {[
                   { icon: "user", label: "프로필 보기" },
                   { icon: "cog", label: "계정 설정" },
-                  { icon: "calendar-check", label: "나의 예약" },
-                  { icon: "heart", label: "찜한 트레이너" },
-                  { icon: "credit-card", label: "결제 내역" },
                 ].map((item, index) => (
                   <button
                     key={index}

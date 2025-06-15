@@ -20,15 +20,16 @@ export default function MapSection({
       </div>
 
       <div className="relative bg-white rounded-xl shadow-lg p-4 h-[50vh] mb-8 flex items-center justify-center">
-        {/* SVG 지도 컴포넌트 */}
+        {/* ✅ SVG 지도 반응형 렌더링 */}
         <div className="w-full h-full flex items-center justify-center">
           <SvgKoreaMap
+            className="w-full max-w-[400px] md:max-w-[400px] lg:max-w-[400px] h-auto"
             selectedRegion={selectedRegion}
             onRegionClick={onRegionClick}
           />
         </div>
 
-        {/* 등급 설명 박스 */}
+        {/* ✅ 자격증 등급 설명 */}
         <div className="absolute bottom-4 left-4 bg-white/90 p-3 rounded-lg shadow-sm text-sm z-10">
           <div className="font-semibold mb-2">자격증 레벨</div>
           <div className="text-xs text-gray-700 space-y-1">
