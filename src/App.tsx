@@ -10,6 +10,7 @@ function App() {
     <MainLayout>
       <HeroSection />
       <MapSection />
+      {/* 여기만 실시간 supabase 트레이너 디렉토리 */}
       <TrainerDirectorySection />
       <FacilitySection />
       <BoardSection />
