@@ -40,3 +40,15 @@
 .read-the-docs {
   color: #888;
 }
+
+.rte-content {
+  min-height: 300px;
+  padding: 1rem;
+}
+
+.rte-content:empty:before {
+  content: "본문을 입력하세요";
+  color: #bbb;
+  pointer-events: none;
+  display: block;
+}

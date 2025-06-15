@@ -15,7 +15,7 @@ interface Post {
   category?: string;
   created_at: string;
   content: string;
-  image?: string;
+  thumbnail_url?: string;
   user_id?: string;
   authorName?: string;
   authorImage?: string;
@@ -30,7 +30,7 @@ export default function BoardSection() {
     const fetchPosts = async () => {
       const { data: rawPosts, error } = await supabase
         .from("posts")
-        .select("id, title, category, content, created_at, image, user_id")
+        .select("id, title, category, content, created_at, thumbnail_url, user_id")
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -78,17 +78,21 @@ export default function BoardSection() {
             className="bg-white rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 transform mb-4 cursor-pointer"
           >
             <div className="flex">
-              <div className="w-1/3 p-3">
-                <img
-                  src={
-                    post.image ||
-                    "https://via.placeholder.com/375x200.png?text=No+Image"
-                  }
-                  alt={post.title}
-                  className="w-full h-50 object-cover rounded-lg"
-                />
-              </div>
-              <div className="w-2/3 p-3">
+  {/* 썸네일: 좌측에 고정, 항상 박스 내에서만 보임 */}
+  <div className="w-[120px] h-[120px] p-3 flex-shrink-0">
+    <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+      <img
+        src={
+          post.thumbnail_url ||
+          "https://via.placeholder.com/120x80.png?text=No+Image"
+        }
+        alt={post.title}
+        className="w-full h-full object-cover"
+        style={{ display: "block" }}
+      />
+    </div>
+  </div>
+              <div className="flex-1 p-3">
                 <div className="flex items-center mb-1">
                   <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
                     {post.category || "기타"}

@@ -5,7 +5,7 @@ interface Post {
   id: number;
   category: string;
   title: string;
-  authorName: string; // 👈 author → authorName으로 변경
+  authorName: string;
   authorImage?: string;
   created_at: string;
   views: number;
@@ -26,6 +26,9 @@ export default function PostCard({ post }: { post: Post }) {
       })
     : "";
 
+  // 이미지 오류 시 fallback 처리
+  const [imgError, setImgError] = React.useState(false);
+
   return (
     <div
       className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:bg-gray-50 transition"
@@ -34,11 +37,12 @@ export default function PostCard({ post }: { post: Post }) {
       <div className="p-4">
         <div className="flex items-start">
           <div className="w-24 h-20 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-            <img
-              src={post.thumbnail || fallbackThumbnail}
-              alt={post.title}
-              className="w-full h-full object-cover object-top"
-            />
+          <img
+  src={!imgError && post.thumbnail ? post.thumbnail : fallbackThumbnail}
+  alt={post.title}
+  className="w-full h-full object-cover object-top"
+  onError={() => setImgError(true)}
+/>
           </div>
           <div className="flex-1 min-w-0">
             <span className="inline-block px-2 py-0.5 bg-gray-100 text-[#1A1E27] rounded-full text-xs mb-1.5">

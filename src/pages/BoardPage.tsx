@@ -4,7 +4,14 @@ import { supabase } from "../lib/supabaseClient";
 import PostCard from "../components/board/PostCard";
 import Pagination from "../components/board/Pagination";
 
-const categories = ["전체", "트레이닝 팁", "영양 정보", "건강 정보", "운동 루틴", "성공 사례"];
+const categories = [
+  "전체",
+  "트레이닝 팁",
+  "영양 정보",
+  "건강 정보",
+  "운동 루틴",
+  "성공 사례",
+];
 
 export default function BoardPage() {
   const location = useLocation();
@@ -38,14 +45,16 @@ export default function BoardPage() {
         .select("user_id, name, image")
         .in("user_id", userIds);
 
-      const enrichedPosts = rawPosts.map((post) => {
-        const trainer = trainers?.find((t) => t.user_id === post.user_id);
-        return {
-          ...post,
-          authorName: trainer?.name ?? "익명",
-          authorImage: trainer?.image ?? "https://placehold.co/40x40?text=👤",
-        };
-      });
+        const enrichedPosts = rawPosts.map((post) => {
+          const trainer = trainers?.find((t) => t.user_id === post.user_id);
+          return {
+            ...post,
+            authorName: trainer?.name ?? "익명",
+            authorImage: trainer?.image ?? "https://placehold.co/40x40?text=👤",
+            thumbnail: post.thumbnail_url || "",   // ⭐️ 여기서 thumbnail 필드로 매핑!
+          };
+        });
+        
 
       setPosts(enrichedPosts);
 
@@ -64,8 +73,12 @@ export default function BoardPage() {
   }, []);
 
   const filteredPosts = posts
-    .filter((post) => activeCategory === "전체" || post.category === activeCategory)
-    .filter((post) => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    .filter(
+      (post) => activeCategory === "전체" || post.category === activeCategory
+    )
+    .filter((post) =>
+      post.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
   const currentPosts = filteredPosts.slice(
@@ -75,7 +88,7 @@ export default function BoardPage() {
 
   return (
     <div className="relative bg-gray-50 min-h-screen pb-28">
-      {/* 상단 타이틀 (AppLayout이 네비 바 처리하므로 타이틀만) */}
+      {/* 상단 타이틀 */}
       <div className="pt-5 max-w-[960px] mx-auto px-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-semibold">게시판</h1>
@@ -131,7 +144,9 @@ export default function BoardPage() {
           {currentPosts.length > 0 ? (
             currentPosts.map((post) => <PostCard key={post.id} post={post} />)
           ) : (
-            <div className="text-center text-gray-500 py-10">검색 결과가 없습니다</div>
+            <div className="text-center text-gray-500 py-10">
+              검색 결과가 없습니다
+            </div>
           )}
         </div>
 
