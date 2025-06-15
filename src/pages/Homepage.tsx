@@ -9,11 +9,22 @@ import SearchModal from "../components/SearchModal";
 import RegionTrainerModal from "../components/RegionTrainerModal";
 import FadeInSection from "../components/FadeInSection";
 
+type Trainer = {
+  name: string;
+  specialty: string;
+  experience: string;
+  rating: number;
+};
+
+type RegionTrainersMap = {
+  [region: string]: Trainer[];
+};
+
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showRegionModal, setShowRegionModal] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState<string>("");
 
   // ✅ TrainerDirectory로 스크롤 이동을 위한 ref
   const trainerRef = useRef<HTMLDivElement>(null);
@@ -22,7 +33,8 @@ export default function HomePage() {
     trainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const regionTrainers = {
+  // 실제 서비스에서는 Supabase 등에서 불러와야 함
+  const regionTrainers: RegionTrainersMap = {
     경상: [
       { name: "김준호", specialty: "헬스 트레이닝", experience: "7년", rating: 4.9 },
       { name: "이미나", specialty: "필라테스", experience: "5년", rating: 4.8 },
@@ -34,13 +46,13 @@ export default function HomePage() {
   };
 
   return (
-<div className="pb-28 space-y-12 px-0 sm:px-4 relative">
+    <div className="w-full max-w-[900px] mx-auto pb-28 space-y-12 px-0 relative">
       {/* ✅ HeroSection: 버튼 클릭 시 TrainerDirectory로 이동 */}
       <HeroSection onFindTrainerClick={scrollToTrainerSection} />
 
       <FadeInSection delay={0.1}>
         <MapSection
-          onRegionClick={(region) => {
+          onRegionClick={(region: string) => {
             setSelectedRegion(region);
             setShowRegionModal(true);
           }}
@@ -83,9 +95,7 @@ export default function HomePage() {
       {showRegionModal && (
         <RegionTrainerModal
           region={selectedRegion}
-          trainers={
-            regionTrainers[selectedRegion as keyof typeof regionTrainers] || []
-          }
+          trainers={regionTrainers[selectedRegion] || []}
           onClose={() => setShowRegionModal(false)}
         />
       )}
