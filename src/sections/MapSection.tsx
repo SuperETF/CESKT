@@ -2,7 +2,7 @@ export default function MapSection({ onRegionClick }: { onRegionClick: (region: 
     return (
       <section className="py-15 px-4">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-[#1A1B35] mb-2">지역별 트레이너 찾기</h2>
+          <h2 className="text-2xl font-bold text-[#1A1B35] mb-2">지역별 인증 전문가 찾기</h2>
           <p className="text-gray-600">한국 전역의 인증된 트레이너를 확인해보세요</p>
         </div>
   

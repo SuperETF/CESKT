@@ -6,18 +6,18 @@ import Pagination from "../components/board/Pagination";
 
 const categories = [
   "전체",
-  "트레이닝 팁",
+  "웨이트 트레이닝",
   "영양 정보",
-  "건강 정보",
+  "근골격계 정보",
   "운동 루틴",
-  "성공 사례",
+  "논문 분석",
 ];
 
 export default function BoardPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<any[]>([]);
-  const [activeCategory, setActiveCategory] = useState("전체");
+  const [activeCategory, setActiveCategory] = useState("\uac1c\uccb4");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 5;
@@ -45,16 +45,15 @@ export default function BoardPage() {
         .select("user_id, name, image")
         .in("user_id", userIds);
 
-        const enrichedPosts = rawPosts.map((post) => {
-          const trainer = trainers?.find((t) => t.user_id === post.user_id);
-          return {
-            ...post,
-            authorName: trainer?.name ?? "익명",
-            authorImage: trainer?.image ?? "https://placehold.co/40x40?text=👤",
-            thumbnail: post.thumbnail_url || "",   // ⭐️ 여기서 thumbnail 필드로 매핑!
-          };
-        });
-        
+      const enrichedPosts = rawPosts.map((post) => {
+        const trainer = trainers?.find((t) => t.user_id === post.user_id);
+        return {
+          ...post,
+          authorName: trainer?.name ?? "익명",
+          authorImage: trainer?.image ?? "https://placehold.co/40x40?text=\ud83d\udc64",
+          thumbnail: post.thumbnail_url || "",
+        };
+      });
 
       setPosts(enrichedPosts);
 
@@ -74,7 +73,7 @@ export default function BoardPage() {
 
   const filteredPosts = posts
     .filter(
-      (post) => activeCategory === "전체" || post.category === activeCategory
+      (post) => activeCategory === "개체" || post.category === activeCategory
     )
     .filter((post) =>
       post.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -123,7 +122,7 @@ export default function BoardPage() {
             {categories.map((category) => (
               <button
                 key={category}
-                className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap !rounded-button ${
+                className={`px-3 py-1.5 rounded-md text-sm whitespace-nowrap !rounded-button ${
                   activeCategory === category
                     ? "bg-[#1A1B35] text-white"
                     : "bg-gray-100 text-gray-700"
@@ -139,7 +138,7 @@ export default function BoardPage() {
           </div>
         </div>
 
-        {/* 게시글 리스트 */}
+        {/* 게시권 리스트 */}
         <div className="space-y-4 mt-6">
           {currentPosts.length > 0 ? (
             currentPosts.map((post) => <PostCard key={post.id} post={post} />)

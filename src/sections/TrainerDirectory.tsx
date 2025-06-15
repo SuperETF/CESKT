@@ -50,7 +50,7 @@ export default function TrainerDirectory({ searchQuery, setSearchQuery }: Props)
 
   return (
     <section className="w-full py-8 px-4">
-      <h2 className="text-2xl font-bold text-[#1A1B35] mb-4">추천 트레이너</h2>
+      <h2 className="text-2xl font-bold text-[#1A1B35] mb-4">CESK 트레이너</h2>
 
       {/* 검색바 */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-6">

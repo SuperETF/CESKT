@@ -1,3 +1,5 @@
+///Users/makingchae/CESKT/src/components/BottomTabBar.tsx
+
 interface BottomTabBarProps {
   activeTab: string;
   onChange: (key: string) => void;

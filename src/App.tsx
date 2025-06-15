@@ -98,16 +98,6 @@ function AppRoutes() {
         )}
       </AnimatePresence>
 
-      <BottomTabBar
-  activeTab={currentTabKey ?? ""}
-  onChange={(tabKey) => {
-    if (tabKey === "home") navigate("/");
-    if (tabKey === "trainers") navigate("/trainers");
-    if (tabKey === "board") navigate("/board");
-    if (tabKey === "mypage") navigate("/mypage");
-  }}
-/>
-
     </AppLayout>
   );
 }

@@ -11,12 +11,20 @@ interface Post {
   views: number;
   likes: number;
   thumbnail?: string;
+  content?: string;
+}
+
+function extractTextFromHTML(html: string, maxLength = 60): string {
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+  const text = temp.textContent || temp.innerText || "";
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
 
 export default function PostCard({ post }: { post: Post }) {
   const navigate = useNavigate();
   const fallbackThumbnail = "https://via.placeholder.com/150x100?text=No+Image";
-  const fallbackProfile = "https://placehold.co/40x40?text=👤";
+  const fallbackProfile = "https://placehold.co/40x40?text=\ud83d\udc64";
 
   const formattedDate = post.created_at
     ? new Date(post.created_at).toLocaleDateString("ko-KR", {
@@ -26,8 +34,10 @@ export default function PostCard({ post }: { post: Post }) {
       })
     : "";
 
-  // 이미지 오류 시 fallback 처리
   const [imgError, setImgError] = React.useState(false);
+
+  // 디버깅용 콘솔 로그
+  console.log("[PostCard] Rendering post:", post);
 
   return (
     <div
@@ -36,21 +46,36 @@ export default function PostCard({ post }: { post: Post }) {
     >
       <div className="p-4">
         <div className="flex items-start">
-          <div className="w-24 h-20 rounded-lg overflow-hidden flex-shrink-0 mr-3">
-          <img
-  src={!imgError && post.thumbnail ? post.thumbnail : fallbackThumbnail}
-  alt={post.title}
-  className="w-full h-full object-cover object-top"
-  onError={() => setImgError(true)}
-/>
+          {/* 썸네일 영역 */}
+          <div className="w-[100px] sm:w-[120px] aspect-square rounded-lg overflow-hidden flex-shrink-0 mr-3">
+            <img
+              src={!imgError && post.thumbnail ? post.thumbnail : fallbackThumbnail}
+              alt={post.title}
+              className="w-full h-full object-cover object-top"
+              onError={() => setImgError(true)}
+            />
           </div>
+
+          {/* 텍스트 영역 */}
           <div className="flex-1 min-w-0">
+            {/* 카테고리 */}
             <span className="inline-block px-2 py-0.5 bg-gray-100 text-[#1A1E27] rounded-full text-xs mb-1.5">
               {post.category}
             </span>
+
+            {/* 제목 */}
             <h3 className="text-base font-medium text-gray-800 mb-1 line-clamp-2">
               {post.title}
             </h3>
+
+            {/* 본문 요약 */}
+            {post.content && (
+              <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                {extractTextFromHTML(post.content)}
+              </p>
+            )}
+
+            {/* 작성자 정보 */}
             <div className="flex items-center mt-2">
               <img
                 src={post.authorImage || fallbackProfile}

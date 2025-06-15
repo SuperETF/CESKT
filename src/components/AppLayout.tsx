@@ -45,22 +45,43 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     navigate(routes[key]);
   };
 
-  return (
-    <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center">
-      <TopNav
-        showProfileMenu={showProfileMenu}
-        setShowProfileMenu={setShowProfileMenu}
-        setShowLogoutModal={setShowLogoutModal}
-      />
+  // "/"는 홈(HeroSection) → 패딩, max-width 없음. 그 외에는 900px, mx-auto 적용.
+  const isHome = location.pathname === "/";
 
-      <main className="w-full max-w-[900px] pt-[60px] pb-[64px]">
+  return (
+    <div className="w-full min-h-screen bg-gray-50 flex flex-col overflow-x-hidden">
+
+      {/* TopNav 영역 (배경은 항상 전체, 내부만 900px 제한) */}
+      <div className="w-full bg-[#1A1B35]">
+        <div className="mx-auto w-full max-w-[900px]">
+          <TopNav
+            showProfileMenu={showProfileMenu}
+            setShowProfileMenu={setShowProfileMenu}
+            setShowLogoutModal={setShowLogoutModal}
+          />
+        </div>
+      </div>
+
+      {/* 본문 */}
+      <main
+        className={
+          isHome
+            ? "w-full pt-[60px] pb-[64px] px-0" // 홈(HeroSection) → 제한 없음, 패딩 없음
+            : "w-full max-w-[900px] mx-auto pt-[60px] pb-[64px] px-4" // 그 외 → 900px 제한, 패딩 적용
+        }
+      >
         {children}
       </main>
 
-      <BottomTabBar
-        activeTab={getActiveTab()}
-        onChange={handleTabChange}
-      />
+      {/* 하단 탭바 (배경은 전체, 내부만 900px 제한) */}
+      <div className="w-full">
+        <div className="mx-auto w-full max-w-[900px]">
+          <BottomTabBar
+            activeTab={getActiveTab()}
+            onChange={handleTabChange}
+          />
+        </div>
+      </div>
 
       {/* 로그아웃 모달 */}
       {showLogoutModal && (

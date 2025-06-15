@@ -73,50 +73,48 @@ export default function BoardSection() {
       ) : (
         posts.map((post) => (
           <div
-            key={post.id}
-            onClick={() => navigate(`/board/${post.id}`)}
-            className="bg-white rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 transform mb-4 cursor-pointer"
-          >
-            <div className="flex">
-  {/* 썸네일: 좌측에 고정, 항상 박스 내에서만 보임 */}
-  <div className="w-[120px] h-[120px] p-3 flex-shrink-0">
-    <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-      <img
-        src={
-          post.thumbnail_url ||
-          "https://via.placeholder.com/120x80.png?text=No+Image"
-        }
-        alt={post.title}
-        className="w-full h-full object-cover"
-        style={{ display: "block" }}
-      />
+  key={post.id}
+  onClick={() => navigate(`/board/${post.id}`)}
+  className="bg-white rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 transform mb-4 cursor-pointer overflow-hidden"
+>
+  <div className="flex w-full max-w-full">
+    {/* 왼쪽 썸네일 영역 */}
+    <div className="w-[120px] sm:w-[120px] aspect-square flex-shrink-0 p-2">
+
+      <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+        <img
+          src={post.thumbnail_url || "https://via.placeholder.com/120x80.png?text=No+Image"}
+          alt={post.title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+
+    {/* 오른쪽 내용 영역 */}
+    <div className="flex-1 min-w-0 p-3">
+      <div className="flex items-center mb-1">
+        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+          {post.category || "기타"}
+        </span>
+      </div>
+      <h3 className="font-bold mb-1 text-sm line-clamp-2">{post.title}</h3>
+      <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+        {extractTextFromHTML(post.content)}
+      </p>
+      <div className="text-xs text-gray-500 flex items-center gap-2">
+        <img
+          src={post.authorImage}
+          alt={post.authorName}
+          className="w-5 h-5 rounded-full"
+        />
+        <span>{post.authorName}</span>
+        <span>•</span>
+        <span>{new Date(post.created_at).toLocaleDateString("ko-KR")}</span>
+      </div>
     </div>
   </div>
-              <div className="flex-1 p-3">
-                <div className="flex items-center mb-1">
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
-                    {post.category || "기타"}
-                  </span>
-                </div>
-                <h3 className="font-bold mb-1 text-sm line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                  {extractTextFromHTML(post.content)}
-                </p>
-                <div className="text-xs text-gray-500 flex items-center gap-2">
-                  <img
-                    src={post.authorImage}
-                    alt={post.authorName}
-                    className="w-5 h-5 rounded-full"
-                  />
-                  <span>{post.authorName}</span>
-                  <span>•</span>
-                  <span>{new Date(post.created_at).toLocaleDateString("ko-KR")}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+</div>
+
         ))
       )}
 

@@ -19,31 +19,22 @@ export default function HomePage() {
   const trainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToTrainerSection = () => {
-    if (trainerRef.current) {
-      const offsetTop = trainerRef.current.offsetTop;
-      const offset = 100; // 필요에 따라 60~120 사이로 조절
-  
-      window.scrollTo({
-        top: offsetTop - offset,
-        behavior: "smooth",
-      });
-    }
+    trainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-  
 
   const regionTrainers = {
-    서울: [
+    경상: [
       { name: "김준호", specialty: "헬스 트레이닝", experience: "7년", rating: 4.9 },
       { name: "이미나", specialty: "필라테스", experience: "5년", rating: 4.8 },
     ],
     부산: [
-      { name: "박성민", specialty: "재활운동", experience: "6년", rating: 4.7 },
+      { name: "박성민", specialty: "재화운동", experience: "6년", rating: 4.7 },
       { name: "정유진", specialty: "요가", experience: "8년", rating: 4.9 },
     ],
   };
 
   return (
-    <div className="pb-28 space-y-12 px-4 relative">
+<div className="pb-28 space-y-12 px-0 sm:px-4 relative">
       {/* ✅ HeroSection: 버튼 클릭 시 TrainerDirectory로 이동 */}
       <HeroSection onFindTrainerClick={scrollToTrainerSection} />
 
@@ -57,7 +48,7 @@ export default function HomePage() {
       </FadeInSection>
 
       <FadeInSection delay={0.2}>
-        <div ref={trainerRef}>
+        <div ref={trainerRef} className="scroll-mt-28">
           <TrainerDirectory
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}

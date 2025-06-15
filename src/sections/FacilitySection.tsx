@@ -54,7 +54,7 @@ export default function FacilitySection() {
 
   return (
     <section className="relative w-full py-8 px-4 bg-white">
-      <h2 className="text-2xl font-bold text-[#1A1B35] mb-4">제휴 운동시설</h2>
+      <h2 className="text-2xl font-bold text-[#1A1B35] mb-4">CESK 인증 운동 센터</h2>
 
       <div className="relative">
         {/* 좌우 화살표 */}
