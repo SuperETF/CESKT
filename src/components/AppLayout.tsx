@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import TopNav from "./TopNav";
+import BottomTabBar from "./BottomTabBar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 바깥 클릭 시 프로필 메뉴 닫기
   useEffect(() => {
@@ -19,14 +24,43 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  const getActiveTab = () => {
+    if (location.pathname === "/") return "home";
+    if (location.pathname.startsWith("/search")) return "search";
+    if (location.pathname.startsWith("/trainers")) return "trainers";
+    if (location.pathname.startsWith("/board")) return "board";
+    if (location.pathname.startsWith("/mypage")) return "mypage";
+    return "";
+  };
+
+  const handleTabChange = (key: string) => {
+    const routes: Record<string, string> = {
+      home: "/",
+      search: "/search",
+      trainers: "/trainers",
+      board: "/board",
+      mypage: "/mypage",
+    };
+    setShowProfileMenu(false);
+    navigate(routes[key]);
+  };
+
   return (
-    <div className="w-full min-h-screen bg-gray-50 flex justify-center">
+    <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center">
       <TopNav
         showProfileMenu={showProfileMenu}
         setShowProfileMenu={setShowProfileMenu}
         setShowLogoutModal={setShowLogoutModal}
       />
-      <main className="w-full max-w-[900px] pt-[60px]">{children}</main>
+
+      <main className="w-full max-w-[900px] pt-[60px] pb-[64px]">
+        {children}
+      </main>
+
+      <BottomTabBar
+        activeTab={getActiveTab()}
+        onChange={handleTabChange}
+      />
 
       {/* 로그아웃 모달 */}
       {showLogoutModal && (
@@ -44,7 +78,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
               <button
                 onClick={() => {
-                  // 여기에 실제 로그아웃 로직 추가
+                  // 실제 로그아웃 로직
+                  localStorage.clear();
                   window.location.href = "/login";
                 }}
                 className="flex-1 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors !rounded-button"

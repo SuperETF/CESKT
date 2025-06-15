@@ -3,15 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import PostCard from "../components/board/PostCard";
 import Pagination from "../components/board/Pagination";
-import BottomTabBar from "../components/BottomTabBar";
 
 const categories = ["전체", "트레이닝 팁", "영양 정보", "건강 정보", "운동 루틴", "성공 사례"];
 
 export default function BoardPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const activeTab = location.pathname === "/board" ? "board" : "";
-
   const [posts, setPosts] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("전체");
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,22 +75,18 @@ export default function BoardPage() {
 
   return (
     <div className="relative bg-gray-50 min-h-screen pb-28">
-      {/* 상단 네비 */}
-      <div className="bg-[#1A1B35] text-white z-50 shadow-md fixed top-0 left-0 right-0">
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-[960px] px-4 py-3 flex items-center justify-between">
-            <button className="p-2" onClick={() => navigate(-1)}>
-              <i className="fas fa-arrow-left text-lg"></i>
-            </button>
-            <div className="text-lg font-bold text-center flex-1">게시판</div>
-            <button className="p-2" onClick={() => navigate("/board/write")}>
-              <i className="fas fa-pen text-lg"></i>
-            </button>
-          </div>
+      {/* 상단 타이틀 (AppLayout이 네비 바 처리하므로 타이틀만) */}
+      <div className="pt-5 max-w-[960px] mx-auto px-4">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl font-semibold">게시판</h1>
+          <button
+            className="text-sm bg-[#1A1B35] text-white px-3 py-1.5 rounded-lg"
+            onClick={() => navigate("/board/write")}
+          >
+            글쓰기
+          </button>
         </div>
-      </div>
 
-      <div className="pt-20 max-w-[960px] mx-auto px-4">
         {/* 검색 */}
         <div className="mb-4">
           <div className="relative">
@@ -154,17 +147,6 @@ export default function BoardPage() {
           />
         )}
       </div>
-
-      {/* 하단 탭바 */}
-      <BottomTabBar
-        activeTab={activeTab}
-        onChange={(key) => {
-          if (key === "home") navigate("/");
-          if (key === "trainers") navigate("/trainers");
-          if (key === "board") navigate("/board");
-          if (key === "mypage") navigate("/mypage");
-        }}
-      />
     </div>
   );
 }

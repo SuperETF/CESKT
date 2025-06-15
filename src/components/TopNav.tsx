@@ -15,7 +15,6 @@ export default function TopNav({
 }: TopNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -52,20 +51,35 @@ export default function TopNav({
       navigate("/login");
     }
   };
+
+  const getTitle = () => {
+    const path = location.pathname;
+    if (path.startsWith("/board/write")) return "글쓰기";
+    if (path.startsWith("/board/") && path !== "/board") return "게시글 보기";
+    if (path === "/board") return "게시판";
+    if (path.startsWith("/trainers/") && path !== "/trainers") return "트레이너 프로필";
+    if (path === "/trainers") return "트레이너 찾기";
+    if (path === "/login") return "로그인";
+    return "CESKT 인증 트레이너"; // 홈 or 기본
+  };
+
+  const isHome = location.pathname === "/";
+
   return (
-<div className="fixed bg-center mx-auto w-full max-w-[900px] z-50 shadow-md bg-[#1A1B35]">
-  <div className="mx-auto w-full max-w-[900px] px-4 py-3 flex items-center justify-between text-white">
-    <div className="flex items-center space-x-3">
-      {!isHome && (
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-[#2A2B45] transition"
-        >
-          <i className="fas fa-arrow-left text-lg"></i>
-        </button>
-      )}
-      <div className="text-xl font-bold">EXERCISE SCHOOL</div>
-    </div>
+    <div className="fixed bg-center mx-auto w-full max-w-[900px] z-50 shadow-md bg-[#1A1B35]">
+      <div className="mx-auto w-full max-w-[900px] px-4 py-3 flex items-center justify-between text-white">
+        <div className="flex items-center space-x-3">
+          {!isHome && (
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-[#2A2B45] transition"
+            >
+              <i className="fas fa-arrow-left text-lg"></i>
+            </button>
+          )}
+          <div className="text-xl font-bold">{getTitle()}</div>
+        </div>
+
         <div className="flex items-center space-x-2">
           {userEmail && (
             <button className="p-2 rounded-full hover:bg-[#2A2B45] transition cursor-pointer">

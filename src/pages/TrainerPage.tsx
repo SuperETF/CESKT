@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "../components/BottomTabBar";
 import { supabase } from "../lib/supabaseClient";
 import { FaMapMarkerAlt, FaHistory } from "react-icons/fa";
-
 
 interface Trainer {
   id: number;
@@ -17,7 +15,6 @@ interface Trainer {
 }
 
 export default function TrainerPage() {
-  const [activeTab, setActiveTab] = useState("trainers");
   const [searchQuery, setSearchQuery] = useState("");
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const navigate = useNavigate();
@@ -31,7 +28,6 @@ export default function TrainerPage() {
     fetchTrainers();
   }, []);
 
-  // ✅ specialty 값 안전하게 문자열로 처리
   const getSpecialtyString = (s: Trainer["specialty"]) => {
     if (Array.isArray(s)) return s.join(", ");
     if (typeof s === "string") return s;
@@ -49,22 +45,6 @@ export default function TrainerPage() {
 
   return (
     <div className="relative bg-gray-50 min-h-screen pb-28">
-      {/* 상단 네비게이션 바 */}
-      <div className="bg-[#1A1B35] text-white z-50 shadow-md">
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-[960px] px-4 py-3 flex items-center justify-between">
-            <button className="p-2" onClick={() => navigate(-1)}>
-              <i className="fas fa-arrow-left text-lg"></i>
-            </button>
-            <div className="text-lg font-bold text-center flex-1">트레이너 찾기</div>
-            <button className="p-2">
-              <i className="fas fa-sliders-h text-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 검색 + 리스트 */}
       <div className="pt-5 max-w-[960px] mx-auto px-4">
         <div className="mb-4">
           <div className="flex w-full rounded-lg overflow-hidden border border-gray-300">
@@ -83,15 +63,16 @@ export default function TrainerPage() {
         <div className="grid grid-cols-1 gap-4">
           {filtered.length > 0 ? (
             filtered.map((t) => (
-              <div key={t.id} className="bg-white p-4 rounded-lg shadow-md flex transition-transform hover:-translate-y-1 duration-300 cursor-pointer">
-                {/* ✅ 고정 비율 박스 */}
+              <div
+                key={t.id}
+                className="bg-white p-4 rounded-lg shadow-md flex transition-transform hover:-translate-y-1 duration-300 cursor-pointer"
+              >
                 <div className="w-[96px] h-[150px] rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
                   <img
                     src={t.image || "https://placehold.co/96x150?text=No+Image"}
                     alt={t.name}
                     className="w-full h-full object-cover brightness-110"
                     loading="lazy"
-                    decoding="async"
                   />
                 </div>
                 <div className="flex-1">
@@ -106,13 +87,13 @@ export default function TrainerPage() {
                     {getSpecialtyString(t.specialty)}
                   </p>
                   <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-    <FaMapMarkerAlt className="text-gray-400 text-xs" />
-    {t.location}
-  </p>
-  <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-    <FaHistory className="text-gray-400 text-xs" />
-     {t.experience}
-  </p>
+                    <FaMapMarkerAlt className="text-gray-400 text-xs" />
+                    {t.location}
+                  </p>
+                  <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                    <FaHistory className="text-gray-400 text-xs" />
+                    {t.experience}
+                  </p>
                   <button
                     className="mt-2 w-full bg-[#1A1B35] text-white py-2 rounded-lg text-sm font-medium"
                     onClick={() => navigate(`/trainers/${t.id}`)}
@@ -127,9 +108,6 @@ export default function TrainerPage() {
           )}
         </div>
       </div>
-
-      {/* 탭바 */}
-      <BottomTabBar activeTab={activeTab} onChange={setActiveTab} />
     </div>
   );
 }
