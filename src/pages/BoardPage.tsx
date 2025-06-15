@@ -1,0 +1,170 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
+import PostCard from "../components/board/PostCard";
+import Pagination from "../components/board/Pagination";
+import BottomTabBar from "../components/BottomTabBar";
+
+const categories = ["전체", "트레이닝 팁", "영양 정보", "건강 정보", "운동 루틴", "성공 사례"];
+
+export default function BoardPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeTab = location.pathname === "/board" ? "board" : "";
+
+  const [posts, setPosts] = useState<any[]>([]);
+  const [activeCategory, setActiveCategory] = useState("전체");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 5;
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+
+      const guestId = localStorage.getItem("guest_id") || crypto.randomUUID();
+      localStorage.setItem("guest_id", guestId);
+      const viewerId = authUser?.id ?? `guest-${guestId}`;
+
+      const { data: rawPosts, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!rawPosts || error) return;
+
+      const userIds = [...new Set(rawPosts.map((p) => p.user_id))];
+      const { data: trainers } = await supabase
+        .from("trainers")
+        .select("user_id, name, image")
+        .in("user_id", userIds);
+
+      const enrichedPosts = rawPosts.map((post) => {
+        const trainer = trainers?.find((t) => t.user_id === post.user_id);
+        return {
+          ...post,
+          authorName: trainer?.name ?? "익명",
+          authorImage: trainer?.image ?? "https://placehold.co/40x40?text=👤",
+        };
+      });
+
+      setPosts(enrichedPosts);
+
+      const viewPromises = enrichedPosts.map((post) =>
+        supabase
+          .from("post_views")
+          .upsert(
+            { post_id: post.id, user_id: viewerId },
+            { onConflict: "post_id,user_id" }
+          )
+      );
+      await Promise.all(viewPromises);
+    };
+
+    fetchPosts();
+  }, []);
+
+  const filteredPosts = posts
+    .filter((post) => activeCategory === "전체" || post.category === activeCategory)
+    .filter((post) => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const currentPosts = filteredPosts.slice(
+    (currentPage - 1) * postsPerPage,
+    currentPage * postsPerPage
+  );
+
+  return (
+    <div className="relative bg-gray-50 min-h-screen pb-28">
+      {/* 상단 네비 */}
+      <div className="bg-[#1A1B35] text-white z-50 shadow-md fixed top-0 left-0 right-0">
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-[960px] px-4 py-3 flex items-center justify-between">
+            <button className="p-2" onClick={() => navigate(-1)}>
+              <i className="fas fa-arrow-left text-lg"></i>
+            </button>
+            <div className="text-lg font-bold text-center flex-1">게시판</div>
+            <button className="p-2" onClick={() => navigate("/board/write")}>
+              <i className="fas fa-pen text-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-20 max-w-[960px] mx-auto px-4">
+        {/* 검색 */}
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-100 text-sm focus:outline-none border-none"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+            <i className="fas fa-search absolute left-3.5 top-3 text-gray-400"></i>
+          </div>
+        </div>
+
+        {/* 카테고리 필터 */}
+        <div className="overflow-x-auto scrollbar-hide py-3 -mx-4">
+          <div className="flex px-4 space-x-2 min-w-max">
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap !rounded-button ${
+                  activeCategory === category
+                    ? "bg-[#1A1B35] text-white"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+                onClick={() => {
+                  setActiveCategory(category);
+                  setCurrentPage(1);
+                }}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 게시글 리스트 */}
+        <div className="space-y-4 mt-6">
+          {currentPosts.length > 0 ? (
+            currentPosts.map((post) => <PostCard key={post.id} post={post} />)
+          ) : (
+            <div className="text-center text-gray-500 py-10">검색 결과가 없습니다</div>
+          )}
+        </div>
+
+        {/* 페이지네이션 */}
+        {filteredPosts.length > postsPerPage && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onChange={(page) => {
+              setCurrentPage(page);
+              window.scrollTo(0, 0);
+            }}
+          />
+        )}
+      </div>
+
+      {/* 하단 탭바 */}
+      <BottomTabBar
+        activeTab={activeTab}
+        onChange={(key) => {
+          if (key === "home") navigate("/");
+          if (key === "trainers") navigate("/trainers");
+          if (key === "board") navigate("/board");
+          if (key === "mypage") navigate("/mypage");
+        }}
+      />
+    </div>
+  );
+}
