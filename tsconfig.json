@@ -15,8 +15,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    
+    "baseUrl": "src"
+    // "paths" 제거 또는 명확한 커스텀 prefix 사용
   },
-  "include": ["src"],
+  "include": ["src", "node_modules/@types"],
   "references": []
 }
