@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { FaMapMarkerAlt, FaHistory } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 interface Trainer {
   id: number;
@@ -44,6 +45,17 @@ export default function TrainerPage() {
   });
 
   return (
+    <>
+    {/* ✅ SEO 태그 설정 */}
+    <Helmet>
+      <title>CESKT | 인증된 트레이너 찾기</title>
+      <meta
+        name="description"
+        content="CESKT는 지역 기반의 맞춤형 트레이너를 찾아주는 플랫폼입니다. 지금 바로 나에게 맞는 전문가를 검색해보세요."
+      />
+      <link rel="canonical" href="https://www.ceskt.kr/" />
+    </Helmet>
+
     <div className="relative bg-gray-50 min-h-screen pb-28">
       <div className="pt-5 max-w-[960px] mx-auto px-4">
         <div className="mb-4">
@@ -109,5 +121,6 @@ export default function TrainerPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

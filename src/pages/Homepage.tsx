@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async"; 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
@@ -55,6 +56,17 @@ export default function HomePage() {
   }, []);
 
   return (
+    <>
+      {/* ✅ SEO 태그 설정 */}
+      <Helmet>
+        <title>CESKT | 전문가 트레이너 찾기 플랫폼</title>
+        <meta
+          name="description"
+          content="CESKT는 지역 기반의 맞춤형 트레이너를 찾아주는 플랫폼입니다. 지금 바로 나에게 맞는 전문가를 검색해보세요."
+        />
+        <link rel="canonical" href="https://www.ceskt.kr/" />
+      </Helmet>
+
     <div className="w-full max-w-[900px] mx-auto pb-28 space-y-12 px-0 relative">
       <HeroSection onFindTrainerClick={scrollToTrainerSection} />
 
@@ -122,5 +134,6 @@ export default function HomePage() {
         />
       )}
     </div>
+    </>
   );
 }
