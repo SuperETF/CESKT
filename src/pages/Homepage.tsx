@@ -10,10 +10,12 @@ import RegionTrainerModal from "../components/RegionTrainerModal";
 import FadeInSection from "../components/FadeInSection";
 
 type Trainer = {
+  id: string; // ✅ 상세 페이지 이동을 위한 고유 ID
   name: string;
   specialty: string;
   experience: string;
   rating: number;
+  image?: string;
 };
 
 type RegionTrainersMap = {
@@ -26,28 +28,51 @@ export default function HomePage() {
   const [showRegionModal, setShowRegionModal] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<string>("");
 
-  // ✅ TrainerDirectory로 스크롤 이동을 위한 ref
   const trainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToTrainerSection = () => {
     trainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // 실제 서비스에서는 Supabase 등에서 불러와야 함
+  // ✅ Mock 데이터 (id 포함)
   const regionTrainers: RegionTrainersMap = {
     경상: [
-      { name: "김준호", specialty: "헬스 트레이닝", experience: "7년", rating: 4.9 },
-      { name: "이미나", specialty: "필라테스", experience: "5년", rating: 4.8 },
+      {
+        id: "trainer-kim",
+        name: "김준호",
+        specialty: "헬스 트레이닝",
+        experience: "7년",
+        rating: 4.9,
+        image: "https://via.placeholder.com/100x130?text=김준호",
+      },
+      {
+        id: "trainer-lee",
+        name: "이미나",
+        specialty: "필라테스",
+        experience: "5년",
+        rating: 4.8,
+      },
     ],
     부산: [
-      { name: "박성민", specialty: "재화운동", experience: "6년", rating: 4.7 },
-      { name: "정유진", specialty: "요가", experience: "8년", rating: 4.9 },
+      {
+        id: "trainer-park",
+        name: "박성민",
+        specialty: "재활운동",
+        experience: "6년",
+        rating: 4.7,
+      },
+      {
+        id: "trainer-jung",
+        name: "정유진",
+        specialty: "요가",
+        experience: "8년",
+        rating: 4.9,
+      },
     ],
   };
 
   return (
     <div className="w-full max-w-[900px] mx-auto pb-28 space-y-12 px-0 relative">
-      {/* ✅ HeroSection: 버튼 클릭 시 TrainerDirectory로 이동 */}
       <HeroSection onFindTrainerClick={scrollToTrainerSection} />
 
       <FadeInSection delay={0.1}>
@@ -76,7 +101,7 @@ export default function HomePage() {
         <BoardSection />
       </FadeInSection>
 
-      {/* ✅ FAB 버튼 */}
+      {/* 🔍 FAB 검색 버튼 */}
       <button
         onClick={() => setShowSearchModal(true)}
         className="fixed right-4 bottom-[88px] bg-[#1A1B35] text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-[#2A2B45] transition"
@@ -97,6 +122,7 @@ export default function HomePage() {
           region={selectedRegion}
           trainers={regionTrainers[selectedRegion] || []}
           onClose={() => setShowRegionModal(false)}
+          isMobile={false}
         />
       )}
     </div>

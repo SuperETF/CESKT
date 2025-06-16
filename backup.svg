@@ -5,22 +5,9 @@ interface SvgKoreaMapProps {
   selectedRegion?: string | null;
   className?: string; // ✅ 이거 꼭 있어야 함!
   isMobile?: boolean;
-  isHoveredRegion?: (region: string) => boolean;
-  isHoveringModal?: boolean;
 }
 
-export default function SvgKoreaMap({
-  onRegionClick,
-  onRegionLeave,
-  selectedRegion,
-  className,
-  isMobile,
-  isHoveringModal,
-}: SvgKoreaMapProps) {
-  function isHoveredRegion(arg0: string) {
-    throw new Error("Function not implemented.");
-  }
-
+export default function SvgKoreaMap({ onRegionClick, selectedRegion, className }: SvgKoreaMapProps) {
   return (
     <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +19,6 @@ export default function SvgKoreaMap({
     strokeLinecap="round"
     strokeLinejoin="round"
     strokeWidth={0.5}
-    
   >
         
       {/* 아래에 각 구역별 path를 붙여넣고, 
@@ -45,7 +31,7 @@ export default function SvgKoreaMap({
         fill={selectedRegion === "서울" ? "#334155" : "#94A3B8"} 
         className={className}
         onClick={() => onRegionClick("서울")}
-        onMouseEnter={e => e.currentTarget.setAttribute('fill', "#334155")}
+        onMouseEnter={e => e.currentTarget.setAttribute('fill', '#334155')}
         onMouseLeave={e => e.currentTarget.setAttribute('fill', selectedRegion === "서울" ? "#334155" : "#94A3B8")}
       />
             <path
