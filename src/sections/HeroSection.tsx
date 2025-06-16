@@ -13,7 +13,7 @@ export default function HeroSection({ onFindTrainerClick }: Props) {
   {/* ✅ 배경 이미지 */}
   <div className="absolute inset-0 z-0">
     <img
-      src="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer/utg.jpeg"
+      src="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer//utg4.png"
       alt="Trainer"
       className="object-cover object-top w-full h-full opacity-60"
     />

@@ -14,7 +14,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+
+    // ✅ 추가
+    "baseUrl": "src",
+    "paths": {
+      "@types/*": ["types/*"]
+    }
   },
   "include": ["src"],
   "references": []

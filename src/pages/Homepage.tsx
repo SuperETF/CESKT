@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 import HeroSection from "../sections/HeroSection";
 import MapSection from "../sections/MapSection";
@@ -8,14 +9,15 @@ import BoardSection from "../sections/BoardSection";
 import SearchModal from "../components/SearchModal";
 import RegionTrainerModal from "../components/RegionTrainerModal";
 import FadeInSection from "../components/FadeInSection";
+import type { Trainer as ImportedTrainer, Trainer } from "../types/Trainer";
 
-type Trainer = {
-  id: string; // ✅ 상세 페이지 이동을 위한 고유 ID
+type LocalTrainer = {
+  id: string;
   name: string;
-  specialty: string;
-  experience: string;
-  rating: number;
+  specialty: string[]; // ✅ 배열로 정확히
+  location: string;
   image?: string;
+  introduction?: string;
 };
 
 type RegionTrainersMap = {
@@ -28,48 +30,29 @@ export default function HomePage() {
   const [showRegionModal, setShowRegionModal] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<string>("");
 
+  const [trainers, setTrainers] = useState<LocalTrainer[]>([]); // ✅ Supabase trainers 상태
+
   const trainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToTrainerSection = () => {
     trainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // ✅ Mock 데이터 (id 포함)
-  const regionTrainers: RegionTrainersMap = {
-    경상: [
-      {
-        id: "trainer-kim",
-        name: "김준호",
-        specialty: "헬스 트레이닝",
-        experience: "7년",
-        rating: 4.9,
-        image: "https://via.placeholder.com/100x130?text=김준호",
-      },
-      {
-        id: "trainer-lee",
-        name: "이미나",
-        specialty: "필라테스",
-        experience: "5년",
-        rating: 4.8,
-      },
-    ],
-    부산: [
-      {
-        id: "trainer-park",
-        name: "박성민",
-        specialty: "재활운동",
-        experience: "6년",
-        rating: 4.7,
-      },
-      {
-        id: "trainer-jung",
-        name: "정유진",
-        specialty: "요가",
-        experience: "8년",
-        rating: 4.9,
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      const { data, error } = await supabase
+        .from("trainers")
+        .select("id, name, specialty, location, image, introduction");
+
+      if (error) {
+        console.error("트레이너 데이터 오류:", error.message);
+      } else {
+        setTrainers(data || []);
+      }
+    };
+
+    fetchTrainers();
+  }, []);
 
   return (
     <div className="w-full max-w-[900px] mx-auto pb-28 space-y-12 px-0 relative">
@@ -109,18 +92,31 @@ export default function HomePage() {
         <i className="fas fa-search text-xl" />
       </button>
 
+      {/* 🔍 Search Modal - 실시간 검색 결과 */}
       {showSearchModal && (
         <SearchModal
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          onClose={() => setShowSearchModal(false)}
+          onClose={() => {
+            setSearchQuery("");
+            setShowSearchModal(false);
+          }}
+          trainers={trainers}
         />
       )}
 
+      {/* 📍 지역 트레이너 모달 (MapSection 연동) */}
       {showRegionModal && (
         <RegionTrainerModal
           region={selectedRegion}
-          trainers={regionTrainers[selectedRegion] || []}
+          trainers={trainers
+            .filter((t: LocalTrainer) => t.location?.includes(selectedRegion))
+            .map((t: LocalTrainer) => ({
+              ...t,
+              specialty: t.specialty.join(", "), // Convert array to string
+              experience: "0", // Default or derived value converted to string
+              rating: 0, // Default or derived value
+            }))}
           onClose={() => setShowRegionModal(false)}
           isMobile={false}
         />
