@@ -5,9 +5,5 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@types": path.resolve(__dirname, "src/types"),
     },
-  },
-});
+);
