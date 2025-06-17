@@ -24,19 +24,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // ✅ 현재 경로 기준으로 activeTab 설정
   const getActiveTab = () => {
     if (location.pathname === "/") return "home";
-    if (location.pathname.startsWith("/search")) return "search";
+    if (location.pathname.startsWith("/education")) return "education"; // ✅ 추가
     if (location.pathname.startsWith("/trainers")) return "trainers";
     if (location.pathname.startsWith("/board")) return "board";
     if (location.pathname.startsWith("/mypage")) return "mypage";
     return "";
   };
 
+  // ✅ 탭 클릭 시 navigate 처리
   const handleTabChange = (key: string) => {
     const routes: Record<string, string> = {
       home: "/",
-      search: "/search",
+      education: "/education", // ✅ 추가
       trainers: "/trainers",
       board: "/board",
       mypage: "/mypage",
@@ -50,8 +52,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 flex flex-col overflow-x-hidden">
-
-      {/* TopNav 영역 (배경은 항상 전체, 내부만 900px 제한) */}
+      {/* TopNav 영역 */}
       <div className="w-full bg-[#1A1B35]">
         <div className="mx-auto w-full max-w-[900px]">
           <TopNav
@@ -66,14 +67,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main
         className={
           isHome
-            ? "w-full pt-[60px] pb-[64px] px-0" // 홈(HeroSection) → 제한 없음, 패딩 없음
-            : "w-full max-w-[900px] mx-auto pt-[60px] pb-[64px] px-4" // 그 외 → 900px 제한, 패딩 적용
+            ? "w-full pt-[60px] pb-[64px] px-0"
+            : "w-full max-w-[900px] mx-auto pt-[60px] pb-[64px] px-4"
         }
       >
         {children}
       </main>
 
-      {/* 하단 탭바 (배경은 전체, 내부만 900px 제한) */}
+      {/* 하단 탭바 */}
       <div className="w-full">
         <div className="mx-auto w-full max-w-[900px]">
           <BottomTabBar
@@ -99,7 +100,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
               <button
                 onClick={() => {
-                  // 실제 로그아웃 로직
                   localStorage.clear();
                   window.location.href = "/login";
                 }}
