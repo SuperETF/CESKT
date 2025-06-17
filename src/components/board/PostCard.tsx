@@ -23,7 +23,7 @@ function extractTextFromHTML(html: string, maxLength = 60): string {
 
 export default function PostCard({ post }: { post: Post }) {
   const navigate = useNavigate();
-  const fallbackThumbnail = "https://via.placeholder.com/150x100?text=No+Image";
+  const fallbackThumbnail = "https://via.placeholder.com/300x180?text=No+Image";
   const fallbackProfile = "https://placehold.co/40x40?text=\ud83d\udc64";
 
   const formattedDate = post.created_at
@@ -36,60 +36,57 @@ export default function PostCard({ post }: { post: Post }) {
 
   const [imgError, setImgError] = React.useState(false);
 
-  // 디버깅용 콘솔 로그
-  console.log("[PostCard] Rendering post:", post);
-
   return (
     <div
-      className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:bg-gray-50 transition"
       onClick={() => navigate(`/board/${post.id}`)}
+      className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:bg-gray-50 transition"
     >
-      <div className="p-4">
-        <div className="flex items-start">
-          {/* 썸네일 영역 */}
-          <div className="w-[100px] sm:w-[120px] aspect-square rounded-lg overflow-hidden flex-shrink-0 mr-3">
-            <img
-              src={!imgError && post.thumbnail ? post.thumbnail : fallbackThumbnail}
-              alt={post.title}
-              className="w-full h-full object-cover object-top"
-              onError={() => setImgError(true)}
-            />
-          </div>
+      <div className="flex flex-col sm:flex-row p-4 gap-4">
+        {/* ✅ 썸네일 이미지 */}
+        <div className="sm:w-[160px] w-full aspect-[16/9] rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+          <img
+            src={!imgError && post.thumbnail ? post.thumbnail : fallbackThumbnail}
+            alt={post.title}
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
 
-          {/* 텍스트 영역 */}
-          <div className="flex-1 min-w-0">
-            {/* 카테고리 */}
-            <span className="inline-block px-2 py-0.5 bg-gray-100 text-[#1A1E27] rounded-full text-xs mb-1.5">
+        {/* ✅ 텍스트 콘텐츠 */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          <div>
+            <span className="inline-block px-2 py-0.5 bg-gray-100 text-[#1A1E27] rounded-full text-xs mb-2">
               {post.category}
             </span>
 
-            {/* 제목 */}
             <h3 className="text-base font-medium text-gray-800 mb-1 line-clamp-2">
               {post.title}
             </h3>
 
-            {/* 본문 요약 */}
             {post.content && (
               <p className="text-xs text-gray-600 mb-2 line-clamp-2">
                 {extractTextFromHTML(post.content)}
               </p>
             )}
+          </div>
 
-            {/* 작성자 정보 */}
-            <div className="flex items-center mt-2">
-              <img
-                src={post.authorImage || fallbackProfile}
-                alt={post.authorName}
-                className="w-5 h-5 rounded-full mr-1.5"
-              />
-              <span className="text-xs text-gray-600 mr-2">{post.authorName}</span>
-              <span className="text-xs text-gray-500 mr-2">{formattedDate}</span>
-              <div className="flex items-center text-xs text-gray-500">
-                <i className="fas fa-eye mr-1 text-gray-400"></i>
-                <span>{post.views}</span>
-                <i className="fas fa-heart ml-2 mr-1 text-gray-400"></i>
-                <span>{post.likes}</span>
-              </div>
+          <div className="flex items-center text-xs text-gray-500 mt-2 flex-wrap gap-2">
+            <img
+              src={post.authorImage || fallbackProfile}
+              alt={post.authorName}
+              className="w-5 h-5 rounded-full"
+            />
+            <span className="text-gray-600">{post.authorName}</span>
+            <span className="text-gray-400">{formattedDate}</span>
+            <div className="flex items-center gap-2 ml-auto">
+              <span className="flex items-center">
+                <i className="fas fa-eye mr-1 text-gray-400" />
+                {post.views}
+              </span>
+              <span className="flex items-center">
+                <i className="fas fa-heart mr-1 text-gray-400" />
+                {post.likes}
+              </span>
             </div>
           </div>
         </div>
