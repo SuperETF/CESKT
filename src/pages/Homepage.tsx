@@ -64,14 +64,14 @@ export default function HomePage() {
   <meta property="og:type" content="website" />
   <meta property="og:title" content="CESKT | 검증된 전문가를 찾는다면" />
   <meta property="og:description" content="대한민국 실력 검증된 트레이너를 확인하세요." />
-  <meta property="og:image" content="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer//CESK.png" />
+  <meta property="og:image" content="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer/CESK.png" />
   <meta property="og:url" content="https://www.ceskt.kr/" />
 
   {/* ✅ Twitter Preview */}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="CESKT | 검증된 전문가를 찾는다면" />
   <meta name="twitter:description" content="대한민국 실력 검증된 트레이너를 확인하세요." />
-  <meta name="twitter:image" content="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer//CESK.png" />
+  <meta name="twitter:image" content="https://hecvitgoogsethejrktx.supabase.co/storage/v1/object/public/trainer/CESK.png" />
 </Helmet>
 
       <div className="w-full max-w-[900px] mx-auto pb-28 space-y-12 px-0 relative">
