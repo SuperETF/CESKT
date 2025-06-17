@@ -6,16 +6,8 @@ interface Props {
 }
 
 export default function HeroSection({ onFindTrainerClick }: Props) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
-
-  const SectionTag = isMobile ? "section" : motion.section;
-
   return (
-    <SectionTag
+    <motion.section
       className="w-full sm:max-w-[900px] sm:mx-auto bg-[#1A1B35] text-white overflow-hidden rounded-b-[0px]"
     >
       <div className="relative h-[80vh] w-full">
@@ -26,12 +18,13 @@ export default function HeroSection({ onFindTrainerClick }: Props) {
             alt="Trainer"
             loading="eager"
             decoding="async"
-            className="object-cover object-top w-full h-full opacity-60 will-change-transform"
+            className="object-cover object-top w-full h-full opacity-60 pointer-events-none select-none"
+            draggable={false}
           />
         </div>
 
         {/* ✅ 오버레이 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-transparent z-10 pointer-events-none" />
 
         {/* ✅ 콘텐츠 */}
         <div className="relative z-20 h-full flex flex-col justify-center px-6">
@@ -51,9 +44,9 @@ export default function HeroSection({ onFindTrainerClick }: Props) {
           </div>
         </div>
 
-        {/* ✅ 하단 디자인 */}
-        <div className="absolute bottom-0 right-0 w-full h-32 bg-white transform -skew-y-6 translate-y-14 z-10" />
+        {/* ✅ 하단 디자인 요소 */}
+        <div className="absolute bottom-0 right-0 w-full h-32 bg-white transform -skew-y-6 translate-y-14 z-10 pointer-events-none" />
       </div>
-    </SectionTag>
+    </motion.section>
   );
 }

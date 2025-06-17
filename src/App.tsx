@@ -6,38 +6,34 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useRef } from "react";
 
+// ✅ 페이지 & 레이아웃 import
 import HomePage from "./pages/Homepage";
 import TrainerPage from "./pages/TrainerPage";
 import TrainerDetailPage from "./pages/TrainerDetailPage";
-import BottomTabBar from "./components/BottomTabBar";
-import AppLayout from "./components/AppLayout";
 import BoardPage from "./pages/BoardPage";
 import PostWritePage from "./pages/PostWritePage";
 import PostDetailPage from "./pages/PostDetailPage";
 import LoginPage from "./pages/LoginPage";
-import MyPage from "./pages/MyPage"; // 상단 import 추가
+import MyPage from "./pages/MyPage";
+import AppLayout from "./components/AppLayout";
 
-// ✅ 탭 순서 정의 (for direction)
-const tabOrder = ["home", "trainers", "board", "mypage"]; // ⬅️ mypage 추가
-
+// ✅ 탭 순서 기준 정의
+const tabOrder = ["home", "trainers", "board", "mypage"];
 
 function AppRoutes() {
   const location = useLocation();
-  const navigate = useNavigate();
   const prevTabIndexRef = useRef(0);
 
-  // 현재 탭 키 계산
   const getTabKey = () => {
-    if (location.pathname === "/trainers") return "trainers";
-    if (location.pathname === "/board") return "board";
-    if (location.pathname === "/mypage") return "mypage";
     if (location.pathname === "/") return "home";
+    if (location.pathname.startsWith("/trainers")) return "trainers";
+    if (location.pathname.startsWith("/board")) return "board";
+    if (location.pathname.startsWith("/mypage")) return "mypage";
     return null;
   };
-  
 
   const currentTabKey = getTabKey();
   const currentIndex = currentTabKey ? tabOrder.indexOf(currentTabKey) : -1;
@@ -53,52 +49,48 @@ function AppRoutes() {
     prevTabIndexRef.current = currentIndex;
   }
 
-  // ✅ 좌우 슬라이드 반전된 variants
-  const variants = {
-    initial: (dir: number) =>
-      dir === 0 ? { opacity: 0 } : { opacity: 0, x: -dir * 100 },
+  // ✅ 부드러운 슬라이드 애니메이션 variants
+  const variants: Variants = {
+    initial: (dir: number) => ({
+      opacity: 0,
+      x: dir * 300,
+    }),
     animate: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.25, ease: "easeOut" as const },
+      transition: { duration: 0.4, ease: "easeInOut" },
     },
-    exit: (dir: number) =>
-      dir === 0
-        ? { opacity: 0 }
-        : { opacity: 0, x: dir * 100, transition: { duration: 0.25, ease: "easeIn" as const } },
+    exit: (dir: number) => ({
+      opacity: 0,
+      x: -dir * 300,
+      transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
+    }),
   };
-
-  const isHome = location.pathname === "/";
 
   return (
     <AppLayout>
       <AnimatePresence mode="wait" custom={direction}>
-        {isHome ? (
+      <motion.div
+  key={location.pathname}
+  custom={direction}
+  variants={variants}
+  initial="initial"
+  animate="animate"
+  exit="exit"
+  className="w-full"
+        >
           <Routes location={location}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/trainers" element={<TrainerPage />} />
+            <Route path="/trainers/:id" element={<TrainerDetailPage />} />
+            <Route path="/board" element={<BoardPage />} />
+            <Route path="/board/write" element={<PostWritePage />} />
+            <Route path="/board/:id" element={<PostDetailPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Routes>
-        ) : (
-          <motion.div
-            key={location.pathname}
-            custom={direction}
-            variants={variants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-          >
-            <Routes location={location}>
-              <Route path="/trainers" element={<TrainerPage />} />
-              <Route path="/trainers/:id" element={<TrainerDetailPage />} />
-              <Route path="/board" element={<BoardPage />} />
-              <Route path="/board/write" element={<PostWritePage />} />
-              <Route path="/board/:id" element={<PostDetailPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/mypage" element={<MyPage />} />
-            </Routes>
-          </motion.div>
-        )}
+        </motion.div>
       </AnimatePresence>
-
     </AppLayout>
   );
 }
@@ -106,9 +98,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <HelmetProvider>
-    <Router>
-      <AppRoutes />
-    </Router>
+      <Router>
+        <AppRoutes />
+      </Router>
     </HelmetProvider>
   );
 }
